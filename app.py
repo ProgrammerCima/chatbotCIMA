@@ -1,30 +1,26 @@
 import os
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from core.db import get_config, set_config, add_knowledge, search_knowledge
 from core.hf import infer
-from fastapi.responses import RedirectResponse
-
 
 load_dotenv()
 app = FastAPI(title="Simple Bot (HF Inference API)")
 
-# Servir web estática (frontend simple)
-app.mount("/", StaticFiles(directory="web", html=True), name="web")
+# ✅ Servir web SOLO en /web y dejar libre /api/*
+app.mount("/web", StaticFiles(directory="web", html=True), name="web")
+
+# ✅ Redirigir la raíz a /web/
+@app.get("/")
+def root():
+    return RedirectResponse(url="/web/")
 
 # -------- API --------
 class ChatIn(BaseModel):
     message: str
-
-    
-# Servir web en /web y NO en "/"
-app.mount("/web", StaticFiles(directory="web", html=True), name="web")
-
-@app.get("/")
-def root():
-    return RedirectResponse(url="/web/")
 
 @app.post("/api/chat")
 async def chat(body: ChatIn):
@@ -65,7 +61,7 @@ def set_cfg(
 
 @app.post("/api/docs")
 async def upload_doc(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith((".txt",".md")):
+    if not file.filename.lower().endswith((".txt", ".md")):
         raise HTTPException(400, "Solo .txt o .md")
     content = (await file.read()).decode("utf-8", errors="ignore")
     add_knowledge(file.filename, content)
