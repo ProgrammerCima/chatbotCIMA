@@ -3,7 +3,11 @@ from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
 load_dotenv()
-URL = f"postgresql+psycopg2://{os.getenv('PG_USER')}:{os.getenv('PG_PASS')}@{os.getenv('PG_HOST')}:{os.getenv('PG_PORT')}/{os.getenv('PG_DB')}"
+
+URL = os.getenv("DATABASE_URL")
+if not URL:
+    raise RuntimeError("DATABASE_URL no está definido")
+
 eng = create_engine(URL, pool_pre_ping=True)
 
 DDL = """
@@ -37,4 +41,5 @@ with eng.begin() as c:
         "m": int(os.getenv("MAX_NEW_TOKENS_DEFAULT", "300")),
         "a": os.getenv("ALLOW_OUT_OF_SCOPE", "false").lower() == "true",
     })
-print("DB OK")
+
+print("DB inicializada ✅")
