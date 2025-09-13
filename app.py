@@ -6,6 +6,9 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from core.db import get_config, set_config, add_knowledge, search_knowledge
 from core.hf import infer
+from sqlalchemy import text
+from core.db import ENG  # usa el engine que ya tienes configurado con DATABASE_URL
+
 
 load_dotenv()
 app = FastAPI(title="Simple Bot (HF Inference API)")
@@ -66,3 +69,32 @@ async def upload_doc(file: UploadFile = File(...)):
     content = (await file.read()).decode("utf-8", errors="ignore")
     add_knowledge(file.filename, content)
     return {"ok": True, "filename": file.filename}
+
+DDL = """
+CREATE TABLE IF NOT EXISTS bot_config (
+  id SERIAL PRIMARY KEY,
+  system_prompt TEXT NOT NULL,
+  temp REAL NOT NULL DEFAULT 0.6,
+  max_new_tokens INT NOT NULL DEFAULT 300,
+  allow_out_of_scope BOOLEAN NOT NULL DEFAULT FALSE,
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS knowledge (
+  id SERIAL PRIMARY KEY,
+  title TEXT,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- seed si no hay registros
+INSERT INTO bot_config(system_prompt, temp, max_new_tokens, allow_out_of_scope)
+SELECT 'Eres un asistente en español, breve y claro. Si algo no está en tu conocimiento, dilo.',
+       0.6, 300, FALSE
+WHERE NOT EXISTS (SELECT 1 FROM bot_config);
+"""
+
+@app.on_event("startup")
+def ensure_schema():
+    with ENG.begin() as c:
+        c.execute(text(DDL))
