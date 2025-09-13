@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from core.db import get_config, set_config, add_knowledge, search_knowledge
 from core.hf import infer
+from fastapi.responses import RedirectResponse
+
 
 load_dotenv()
 app = FastAPI(title="Simple Bot (HF Inference API)")
@@ -15,6 +17,14 @@ app.mount("/", StaticFiles(directory="web", html=True), name="web")
 # -------- API --------
 class ChatIn(BaseModel):
     message: str
+
+    
+# Servir web en /web y NO en "/"
+app.mount("/web", StaticFiles(directory="web", html=True), name="web")
+
+@app.get("/")
+def root():
+    return RedirectResponse(url="/web/")
 
 @app.post("/api/chat")
 async def chat(body: ChatIn):
