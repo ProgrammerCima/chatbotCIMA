@@ -1,37 +1,14 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
-  <title>Panel Bot</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Simple HF Bot</title>
 </head>
 <body>
-<main>
-  <h1>⚙️ Panel Bot</h1>
-
-  <section>
-    <h3>Instrucciones & Parámetros</h3>
-    <textarea id="system" rows="5"></textarea>
-    <br>
-    Temp: <input id="temp" type="number" step="0.1">
-    Tokens: <input id="maxn" type="number">
-    Allow out: <select id="allow"><option>false</option><option>true</option></select>
-    <br><button id="saveCfg">Guardar</button><span id="cfgStatus"></span>
-  </section>
-
-  <section>
-    <h3>Subir documento</h3>
-    <input type="file" id="doc" accept=".txt,.md">
-    <button id="sendDoc">Subir</button><span id="docStatus"></span>
-  </section>
-
-  <section>
-    <h3>Probar chat</h3>
-    <input type="text" id="msg" placeholder="Pregunta...">
-    <button id="ask">Enviar</button>
-    <pre id="resp"></pre>
-  </section>
-</main>
-<script src="app.js"></script>
+  <h1>Chat con Hugging Face</h1>
+  <input id="msg" placeholder="Escribe un mensaje">
+  <button onclick="sendMsg()">Enviar</button>
+  <pre id="out"></pre>
+  <script src="app.js"></script>
 </body>
 </html>
