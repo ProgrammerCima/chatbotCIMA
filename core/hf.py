@@ -3,7 +3,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Nombre del modelo (puede cambiar en .env)
-MODEL_NAME = os.getenv("HF_MODEL", "HuggingFaceTB/SmolLM3-3B")
+MODEL_NAME = os.getenv("HF_MODEL", "HuggingFaceTB/SmolLM-135M")
 
 print(f"⏳ Cargando modelo {MODEL_NAME} en CPU...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
