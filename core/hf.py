@@ -1,19 +1,27 @@
-import os, httpx
+import os
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-_client = httpx.AsyncClient(timeout=httpx.Timeout(5.0, read=60.0))
+# Nombre del modelo (puede cambiar en .env)
+MODEL_NAME = os.getenv("HF_MODEL", "HuggingFaceTB/SmolLM3-3B")
 
-def _clean(v: str) -> str:
-    return (v or "").strip().strip('"').strip("'")
+print(f"⏳ Cargando modelo {MODEL_NAME} en CPU...")
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    torch_dtype=torch.float32,  # CPU
+    device_map="cpu"
+)
+print("✅ Modelo cargado en CPU.")
 
-async def infer(prompt: str, temperature: float = 0.7, max_new_tokens: int = 200) -> str:
-    model = _clean(os.getenv("HF_MODEL"))
-    token = _clean(os.getenv("HF_TOKEN"))
-    url = f"https://api-inference.huggingface.co/models/{model}"
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    payload = {"inputs": prompt, "parameters": {"temperature": temperature, "max_new_tokens": max_new_tokens}}
-    r = await _client.post(url, headers=headers, json=payload)
-    r.raise_for_status()
-    data = r.json()
-    if isinstance(data, list) and data and "generated_text" in data[0]:
-        return data[0]["generated_text"]
-    return str(data)
+async def infer(prompt: str) -> str:
+    """Generar texto con el modelo local en CPU."""
+    inputs = tokenizer(prompt, return_tensors="pt").to("cpu")
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=128,
+            temperature=0.7,
+            do_sample=True
+        )
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)

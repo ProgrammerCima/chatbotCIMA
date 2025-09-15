@@ -10,17 +10,19 @@ load_dotenv()
 
 app = FastAPI(title="HF Bot")
 
-# Servir frontend en /web
+# Servir frontend
 app.mount("/web", StaticFiles(directory="web", html=True), name="web")
 
-# Redirigir la raíz a /web/
+# Redirigir raíz -> /web
 @app.get("/")
 def root():
     return RedirectResponse(url="/web/")
 
+# Modelo de entrada
 class ChatIn(BaseModel):
     message: str
 
+# Endpoint de chat
 @app.post("/api/chat")
 async def chat(body: ChatIn):
     msg = (body.message or "").strip()
