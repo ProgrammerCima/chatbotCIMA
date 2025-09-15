@@ -1,7 +1,7 @@
 import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
-
+ 
 # Nombre del modelo (puede cambiar en .env)
 MODEL_NAME = os.getenv("HF_MODEL", "HuggingFaceTB/SmolLM-135M")
 
