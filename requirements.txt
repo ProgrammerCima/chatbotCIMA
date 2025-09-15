@@ -6,3 +6,5 @@ psycopg2-binary
 httpx
 python-dotenv
 python-multipart
+transformers
+torch
