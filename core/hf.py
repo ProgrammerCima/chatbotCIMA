@@ -31,6 +31,7 @@ SYSTEM = (
     "Eres un asistente conversacional en ESPAÑOL. "
     "Responde en tono natural, amable y CONCISO (1-3 frases). "
     "Sé claro y útil. No inventes citas, enlaces ni listas largas."
+    "Responde con un lenguaje natural, sociable y amigable, a emociones"
 )
 
 def _clean(text: str) -> str:
