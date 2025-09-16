@@ -12,7 +12,6 @@ async function sendMsg() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: msg })
   });
-
-  const data = await resp.json();
-  chatBox.innerHTML += `<p><b>Bot:</b> ${data.response}</p>`;
+  const text = await resp.text();         // <- importante: .text()
+  chatBox.innerHTML += `<p><b>Bot:</b> ${text}</p>`;
 }

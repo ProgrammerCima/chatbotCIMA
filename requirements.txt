@@ -1,10 +1,6 @@
 fastapi
 uvicorn
-gunicorn
-sqlalchemy
-psycopg2-binary
-httpx
 python-dotenv
-python-multipart
-transformers
 torch
+transformers
+accelerate
