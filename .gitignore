@@ -19,6 +19,7 @@ Thumbs.db
 .idea/
 .vscode/
 
+_kb_index/
 # Logs / temp files
 *.log
 *.sqlite3
