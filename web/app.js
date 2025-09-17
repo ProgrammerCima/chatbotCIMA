@@ -1,4 +1,4 @@
-async function sendMsg() {
+/*async function sendMsg() {
   const input = document.getElementById("msg");
   const msg = input.value.trim();
   if (!msg) return;
@@ -14,4 +14,4 @@ async function sendMsg() {
   });
   const text = await resp.text();         // <- importante: .text()
   chatBox.innerHTML += `<p><b>Bot:</b> ${text}</p>`;
-}
+} */

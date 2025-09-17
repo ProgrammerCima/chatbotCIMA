@@ -1,23 +1,45 @@
+# core/hf.py
+from __future__ import annotations
+
 import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# --- Config ---
+# ======================
+# Configuración
+# ======================
 HF_MODEL = os.getenv("HF_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-DEVICE = "cpu"  # "cpu" por defecto
+DEVICE = os.getenv("DEVICE", "cpu")              # "cpu" por defecto
+MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "140"))
+TEMPERATURE = float(os.getenv("TEMPERATURE", "0.6"))
+TOP_P = float(os.getenv("TOP_P", "0.9"))
+REPETITION_PENALTY = float(os.getenv("REPETITION_PENALTY", "1.15"))
+NO_REPEAT_NGRAM = int(os.getenv("NO_REPEAT_NGRAM", "4"))
+
+# Corrección gramatical opcional con LanguageTool (ES)
+ENABLE_GRAMMAR_ES = os.getenv("ENABLE_GRAMMAR_ES", "1") == "1"
+try:
+    import language_tool_python
+    _lt_es = language_tool_python.LanguageTool('es') if ENABLE_GRAMMAR_ES else None
+except Exception:
+    _lt_es = None
+
+def _polish_es(text: str) -> str:
+    if not _lt_es:
+        return text
+    try:
+        matches = _lt_es.check(text)
+        return language_tool_python.utils.correct(text, matches)
+    except Exception:
+        return text
 
 print(f"⏳ Cargando modelo {HF_MODEL} en {DEVICE}...")
 tokenizer = AutoTokenizer.from_pretrained(HF_MODEL, use_fast=True)
-
-# Cargar modelo en CPU (simple y compatible)
-model = AutoModelForCausalLM.from_pretrained(
-    HF_MODEL,
-    torch_dtype=torch.float32,
-)
+model = AutoModelForCausalLM.from_pretrained(HF_MODEL, torch_dtype=torch.float32)
 model.to(DEVICE)
 model.eval()
 
-# Asegurar pad_token (algunos modelos no lo traen definido)
+# Asegurar tokens especiales
 if tokenizer.pad_token_id is None:
     tokenizer.pad_token = tokenizer.eos_token
 if getattr(model.config, "pad_token_id", None) is None:
@@ -27,54 +49,86 @@ if getattr(model.config, "eos_token_id", None) is None:
 
 print("✅ Modelo cargado.")
 
+# ======================
+# Estilo / Política de respuesta
+# ======================
 SYSTEM = (
-    "Eres un asistente conversacional en ESPAÑOL. "
-    "Responde en tono natural, amable y CONCISO (1-3 frases). "
-    "Sé claro y útil. No inventes citas, enlaces ni listas largas."
-    "Responde con un lenguaje natural, sociable y amigable, a emociones"
+    "Eres un asistente en ESPAÑOL, claro y amable. Responde en 2–5 frases."
+    "\nReglas IMPORTANTES:"
+    "\n1) SOLO puedes usar la información del bloque 'CONOCIMIENTO RELEVANTE'."
+    '\n2) Si el bloque no es pertinente o no existe, responde exactamente: '
+    '"No dispongo de información suficiente en mi base de conocimiento para responderlo con precisión."'
+    "\n3) No inventes datos, enlaces ni cifras. No hagas suposiciones."
 )
 
+# ======================
+# Utilidades
+# ======================
 def _clean(text: str) -> str:
     """Limpia marcadores de rol y corta si el modelo arrancó otro turno."""
     t = text.lstrip()
 
-    # Quitar encabezados típicos del asistente
-    heads = ("<|assistant|>", "assistant:", "asistente:", "Assistant:", "Asistente:")
-    for h in heads:
+    for h in ("<|assistant|>", "assistant:", "asistente:", "Assistant:", "Asistente:"):
         if t.lower().startswith(h.lower()):
             t = t[len(h):].lstrip()
 
-    # Cortar si aparece otro rol/sistema
-    stops = ("<|user|>", "user:", "usuario:", "Usuario:", "<|system|>", "system:", "Sistema:")
-    for s in stops:
+    for s in ("<|user|>", "user:", "usuario:", "Usuario:", "<|system|>", "system:", "Sistema:"):
         i = t.lower().find(s.lower())
         if i != -1:
             t = t[:i]
-    # Cortar tokens especiales comunes
-    for special in ("<|im_end|>", "</s>", tokenizer.eos_token or ""):
-        if special and special in t:
-            t = t.split(special)[0]
+
+    for sp in (tok for tok in ("<|im_end|>", "</s>", tokenizer.eos_token) if tok):
+        if sp in t:
+            t = t.split(sp)[0]
 
     return t.strip().strip('"').strip()
 
-async def infer(msg: str) -> str:
-    """Genera solo la respuesta del asistente (sin el prompt)."""
-    # 1) Construir el prompt con chat_template cuando exista
+# ======================
+# Inferencia con historial + (opcional) contexto RAG
+# ======================
+async def infer_with_history(
+    history: list[dict],
+    user_msg: str,
+    context: str | None = None
+) -> str:
+    """
+    Genera una respuesta usando historial + (opcional) contexto externo.
+    - history: [{"role":"user"|"assistant","content":"..."}]
+    - user_msg: mensaje nuevo del usuario
+    - context: texto recuperado de tu base de conocimiento (RAG). Opcional.
+    """
+    # 0) Sistema con (o sin) contexto
+    sys_msg = SYSTEM
+    if context:
+        sys_msg += (
+            "\n\nCONOCIMIENTO RELEVANTE:\n"
+            f"{context}\n"
+            "Fin del conocimiento."
+        )
+
+    # 1) Construir el prompt (chat_template si existe)
+    msgs = [{"role": "system", "content": sys_msg}, *history, {"role": "user", "content": user_msg}]
+
     if getattr(tokenizer, "apply_chat_template", None):
         input_ids = tokenizer.apply_chat_template(
-            [
-                {"role": "system", "content": SYSTEM},
-                {"role": "user",   "content": msg},
-            ],
+            msgs,
             add_generation_prompt=True,
             tokenize=True,
             return_tensors="pt",
         ).to(model.device)
         attention_mask = torch.ones_like(input_ids)
     else:
-        # Fallback simple si el tokenizer no trae plantilla
-        prompt = f"Sistema: {SYSTEM}\nUsuario: {msg}\nAsistente:"
-        enc = tokenizer(prompt, return_tensors="pt").to(model.device)
+        # Fallback simple
+        lines = []
+        for m in msgs:
+            if m["role"] == "system":
+                lines.append(f"Sistema: {m['content']}")
+            elif m["role"] == "user":
+                lines.append(f"Usuario: {m['content']}")
+            else:
+                lines.append(f"Asistente: {m['content']}")
+        lines.append("Asistente:")
+        enc = tokenizer("\n".join(lines), return_tensors="pt").to(model.device)
         input_ids = enc["input_ids"]
         attention_mask = enc.get("attention_mask", None)
 
@@ -83,19 +137,27 @@ async def infer(msg: str) -> str:
         out = model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            max_new_tokens=120,
+            max_new_tokens=MAX_NEW_TOKENS,
             do_sample=True,
-            temperature=0.6,
-            top_p=0.9,
-            repetition_penalty=1.15,
-            no_repeat_ngram_size=4,
+            temperature=TEMPERATURE,
+            top_p=TOP_P,
+            repetition_penalty=REPETITION_PENALTY,
+            no_repeat_ngram_size=NO_REPEAT_NGRAM,
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
         )
 
-    # 3) ***CLAVE***: decodificar solo los tokens NUEVOS (sin el prompt)
+    # 3) Decodificar solo tokens NUEVOS
     new_tokens = out[:, input_ids.shape[-1]:]
     text = tokenizer.decode(new_tokens[0], skip_special_tokens=True)
 
-    # 4) Limpieza final
-    return _clean(text)
+    # 4) Limpieza + pulido ES
+    text = _clean(text)
+    text = _polish_es(text)
+    return text
+
+# ======================
+# Modo single-turn
+# ======================
+async def infer(msg: str) -> str:
+    return await infer_with_history([], msg)

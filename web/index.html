@@ -1,15 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
   <title>Chatbot CIMA</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; max-width: 800px; margin: 24px auto; }
+    #log p { margin: .4rem 0; }
+    .me { color: #0a5; }
+    .bot { color: #06f; }
+    textarea { width: 100%; }
+  </style>
 </head>
 <body>
-  <h1>🤖 Chatbot CIMA</h1>
-  <div id="chat"></div>
-  <input id="msg" type="text" placeholder="Escribe tu mensaje..." />
-  <button onclick="sendMsg()">Enviar</button>
+  <h2>Chatbot CIMA (RAG estricto)</h2>
 
-  <script src="app.js"></script>
+  <div id="log"></div>
+
+  <div style="margin-top:8px;">
+    <input id="sid" placeholder="session_id (opcional)" style="width:280px;" />
+  </div>
+  <div style="margin-top:8px;">
+    <input id="msg" placeholder="Escribe tu mensaje..." style="width:520px;" />
+    <button onclick="send()">Enviar</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+
+  <hr/>
+  <h3>📚 Alimentar conocimiento</h3>
+  <input id="kb_title" placeholder="Título" style="width:320px;" />
+  <br/>
+  <textarea id="kb_text" rows="6" placeholder="Pega aquí tu contenido (.txt/.md)"></textarea>
+  <br/>
+  <button onclick="kbAdd()">Guardar en KB</button>
+  <button onclick="kbReindex()">Reindexar</button>
+  <button onclick="kbList()">Ver documentos</button>
+  <pre id="kb_out" style="white-space:pre-wrap;"></pre>
+
+  <script>
+  async function send(){
+    const sid = document.getElementById('sid').value.trim() || 'web';
+    const msg = document.getElementById('msg').value.trim();
+    if(!msg) return;
+    log(`<b class="me">Tú:</b> ${escapeHtml(msg)}`);
+    document.getElementById('msg').value = '';
+    const r = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ message: msg, session_id: sid })
+    });
+    const text = await r.text();
+    log(`<b class="bot">Bot:</b> ${escapeHtml(text)}`);
+  }
+  async function reset(){
+    const sid = document.getElementById('sid').value.trim() || 'web';
+    const r = await fetch('/api/reset', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ session_id: sid })
+    });
+    log(`<b class="bot">Bot:</b> ${escapeHtml(await r.text())}`);
+  }
+  async function kbAdd(){
+    const title = document.getElementById('kb_title').value.trim();
+    const text = document.getElementById('kb_text').value.trim();
+    if(!title || !text){ alert('Falta título o texto'); return; }
+    const r = await fetch('/api/kb/add', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ title, text })
+    });
+    document.getElementById('kb_out').textContent = await r.text();
+  }
+  async function kbReindex(){
+    const r = await fetch('/api/kb/reindex', { method:'POST' });
+    document.getElementById('kb_out').textContent = await r.text();
+  }
+  async function kbList(){
+    const r = await fetch('/api/kb/list');
+    document.getElementById('kb_out').textContent = JSON.stringify(await r.json(), null, 2);
+  }
+  function log(html){ const el = document.createElement('p'); el.innerHTML = html; document.getElementById('log').appendChild(el); }
+  function escapeHtml(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  </script>
 </body>
 </html>

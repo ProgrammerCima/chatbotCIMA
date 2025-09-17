@@ -4,3 +4,4 @@ python-dotenv
 torch
 transformers
 accelerate
+ language-tool-python
