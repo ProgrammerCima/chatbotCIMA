@@ -1,3 +1,4 @@
+# app.py
 import os
 from collections import defaultdict, deque
 from typing import Optional
@@ -67,16 +68,24 @@ async def chat(body: ChatIn):
             f"Temas cargados actualmente: {temas}. Añade el contenido a la KB y vuelve a intentar."
         )
 
-    # 3) Inferencia con historial + contexto (estricto)
-    history = list(SESSIONS.get(sid, []))
-    resp = await infer_with_history(history, msg, context=ctx)
+    # 3) Extraer oraciones más relevantes (extractivo) y convertirlas en HECHOS
+    facts = kb.best_sentences(msg, ctx, n=3)
+    hechos = ""
+    if facts:
+        hechos = "HECHOS:\n- " + "\n- ".join(facts)
 
-    # 4) Guardar turno
+    # 4) Inferencia con historial + contexto (priorizando HECHOS)
+    merged_context = (hechos + "\n\nCONOCIMIENTO RELEVANTE:\n" + ctx) if hechos else ("CONOCIMIENTO RELEVANTE:\n" + ctx)
+
+    history = list(SESSIONS.get(sid, []))
+    resp = await infer_with_history(history, msg, context=merged_context)
+
+    # 5) Guardar turno
     dq = SESSIONS[sid]
     dq.append({"role": "user", "content": msg})
     dq.append({"role": "assistant", "content": resp})
 
-    # 5) (Opcional) anexar fuentes
+    # 6) (Opcional) anexar fuentes
     if sources:
         resp = f"{resp}\n\nFuentes: " + " | ".join(dict.fromkeys(sources))
 

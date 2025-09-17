@@ -1,7 +1,7 @@
 # core/hf.py
 from __future__ import annotations
 
-import os
+import os, re
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -50,15 +50,16 @@ if getattr(model.config, "eos_token_id", None) is None:
 print("✅ Modelo cargado.")
 
 # ======================
-# Estilo / Política de respuesta
+# Estilo / Política de respuesta (estricta y extractiva)
 # ======================
 SYSTEM = (
-    "Eres un asistente en ESPAÑOL, claro y amable. Responde en 2–5 frases."
-    "\nReglas IMPORTANTES:"
-    "\n1) SOLO puedes usar la información del bloque 'CONOCIMIENTO RELEVANTE'."
-    '\n2) Si el bloque no es pertinente o no existe, responde exactamente: '
+    "Eres un asistente en ESPAÑOL, claro y amable. Responde en 1–4 frases."
+    "\nREGLAS ESTRICTAS:"
+    "\n1) SOLO puedes usar la información del bloque 'HECHOS' o 'CONOCIMIENTO RELEVANTE'."
+    '\n2) Si esa información no es pertinente o no existe, responde exactamente: '
     '"No dispongo de información suficiente en mi base de conocimiento para responderlo con precisión."'
-    "\n3) No inventes datos, enlaces ni cifras. No hagas suposiciones."
+    "\n3) Si mencionas correos, teléfonos, montos, fechas o porcentajes, DEBEN aparecer literalmente en esos bloques."
+    "\n4) No inventes datos ni completes con dominios o números supuestos. No hagas suposiciones."
 )
 
 # ======================
@@ -83,6 +84,41 @@ def _clean(text: str) -> str:
 
     return t.strip().strip('"').strip()
 
+def _guard_from_context(text: str, context: str | None) -> bool:
+    """
+    True si los datos delicados citados por 'text' están presentes en 'context'.
+    Si no hay 'context', exige que no haya datos delicados.
+    """
+    if text.strip() == "":
+        return False
+
+    def norm(s: str) -> str:
+        return re.sub(r"\s+", " ", s or "").strip().lower()
+
+    ctx = norm(context or "")
+    out = norm(text)
+
+    emails = re.findall(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", text, flags=re.I)
+    phones = re.findall(r"\+?\d[\d\s\-]{6,}", text)
+    numbers = re.findall(r"\b\d{1,4}(?:[.,]\d+)?\b", text)
+    percents = re.findall(r"\b\d{1,3}\s?%\b", text)
+    dates = re.findall(r"\b(?:\d{1,2}[/\-]\d{1,2}[/\-]\d{2,4})\b", text)
+
+    for e in emails:
+        if norm(e) not in ctx:
+            return False
+
+    ctx_digits = re.sub(r"[^\d+]", "", ctx)
+    for p in phones:
+        if re.sub(r"[^\d+]", "", p) not in ctx_digits:
+            return False
+
+    for z in numbers + percents + dates:
+        if norm(z) not in ctx:
+            return False
+
+    return True
+
 # ======================
 # Inferencia con historial + (opcional) contexto RAG
 # ======================
@@ -101,9 +137,7 @@ async def infer_with_history(
     sys_msg = SYSTEM
     if context:
         sys_msg += (
-            "\n\nCONOCIMIENTO RELEVANTE:\n"
-            f"{context}\n"
-            "Fin del conocimiento."
+            "\n\n" + context.strip() + "\n"
         )
 
     # 1) Construir el prompt (chat_template si existe)
@@ -151,9 +185,16 @@ async def infer_with_history(
     new_tokens = out[:, input_ids.shape[-1]:]
     text = tokenizer.decode(new_tokens[0], skip_special_tokens=True)
 
-    # 4) Limpieza + pulido ES
+    # 4) Limpieza + (opcional) pulido + verificación
     text = _clean(text)
-    text = _polish_es(text)
+    try:
+        text = _polish_es(text)
+    except Exception:
+        pass
+
+    if not _guard_from_context(text, context):
+        return "No dispongo de información suficiente en mi base de conocimiento para responderlo con precisión."
+
     return text
 
 # ======================

@@ -145,6 +145,38 @@ class SimpleKB:
                 t.append(c.title)
         return t
 
+    # ---------- Oraciones más relevantes (extractivo) ----------
+    def best_sentences(self, query: str, context_block: str, n: int = 3) -> list[str]:
+        """
+        Devuelve hasta n oraciones del 'context_block' que mejor responden al query.
+        Usa el mismo modelo de embeddings (E5) para puntuar oraciones.
+        """
+        if not context_block.strip():
+            return []
+
+        sents = re.split(r"(?<=[\.\!\?])\s+", context_block.strip())
+        sents = [s.strip() for s in sents if s.strip()]
+        if not sents:
+            return []
+
+        try:
+            q = self._embed([query], mode="query")[0]
+            mat = self._embed(sents, mode="passage")
+            sims = mat @ q
+            order = np.argsort(-sims)
+            picked = []
+            for i in order:
+                if len(picked) >= n:
+                    break
+                sent = sents[int(i)]
+                if sent not in picked:
+                    picked.append(sent)
+            return picked
+        except Exception:
+            key = query.lower()
+            scored = sorted(sents, key=lambda s: sum(1 for w in key.split() if w in s.lower()), reverse=True)
+            return scored[:n]
+
     # ---------- Búsqueda ----------
     def search(self, query: str, k=4, max_chars=1200):
         """
@@ -159,21 +191,18 @@ class SimpleKB:
         q = self._embed([query], mode="query")[0]       # [d]
         sims = (self.emb @ q)                           # coseno (embeddings normalizados)
 
-        # Top-N por embedding y luego reranking (opcional)
         prelim = np.argsort(-sims)[: max(12, k)]
         if self.reranker is not None and len(prelim) > k:
             cands = [self.chunks[int(i)].text.strip() for i in prelim]
             try:
-                from sentence_transformers.util import batch_to_device  # noqa: F401 (solo asegura dependencia)
+                from sentence_transformers.util import batch_to_device  # noqa: F401
                 pairs = [(query, c) for c in cands]
                 scores = self.reranker.predict(pairs)
                 order = np.argsort(-scores)
                 prelim = [prelim[i] for i in order]
             except Exception:
-                # si falla el reranker, seguimos con el orden por embedding
                 pass
 
-        # Armar contexto hasta max_chars
         ctx_parts, sources, total = [], [], 0
         best = float(sims[prelim[0]]) if len(prelim) else 0.0
         for i in prelim:
@@ -187,7 +216,6 @@ class SimpleKB:
             if len(ctx_parts) >= k:
                 break
 
-        # dedupe fuentes manteniendo orden
         seen = set()
         sources = [s for s in sources if not (s in seen or seen.add(s))]
         return "\n\n".join(ctx_parts), sources, best
