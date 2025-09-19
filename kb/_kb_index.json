@@ -1,154 +1,106 @@
 {
   "chunks": [
     {
-      "doc_id": "arroz_con_leche-0",
-      "title": "Arroz_Con_Leche",
-      "text": "Título: Arroz con leche (receta base) Rinde: 6 porciones\nTiempo total: 35–45 min (activo 10 min) Ingredientes\n- 1 taza (200 g) de arroz (grano mediano o largo)\n- 4 tazas (1 L) de agua para el primer hervor\n- 1 rama de canela (o 1 cdita de canela en polvo al final)\n- 1 tira de cáscara de limón o naranja (opcional)\n- 1 pizca de sal\n- 4 tazas (1 L) de leche entera\n- 1/2 taza (100–120 g) de azúcar (ajusta al gusto)\n- 1 cdita de extracto de vainilla (opcional)\n- 2–3 cdas de pasas (opcional)\n- Para terminar: canela en polvo al gusto Utensilios\n- Olla mediana de fondo grueso\n- Cuchara de madera o silicona\n- Taza medidora",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-0",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "# Prompt maestro — IEP CIMA · Reglamento Interno 2025 (para Qwen2.5‑0.5B‑Instruct)\n**Versión:** 1.0 · **Fecha:** 2025‑09‑19 · **Ámbito:** consultas sobre el *REGLAMENTO INTERNO 2025* de la IEP CIMA (Inicial, Primaria y Secundaria).  \n**Objetivo:** lograr respuestas **cortas, precisas y consistentes** basadas **solo** en este reglamento, sin inventar ni mezclar otras normas. --- ## 1) Instrucciones de comportamiento (siempre vigentes)\n- **Idioma:** Español. - **Tono:** natural, cordial y **conciso** (1–3 frases por defecto).",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "arroz_con_leche-1",
-      "title": "Arroz_Con_Leche",
-      "text": "Procedimiento\n1) Lavar el arroz 1–2 veces hasta que el agua salga menos turbia (quita exceso de almidón sin perder cremosidad). 2) En la olla: agua + canela + cáscara + sal. Cuando hierva, agrega el arroz. Cocina a fuego medio 10–12 min hasta que el grano esté casi tierno y quede poca agua. 3) Retira la cáscara de cítrico. Agrega la leche. Baja a fuego medio-bajo y cocina destapado 15–20 min, moviendo cada 2–3 min para que no se pegue. Busca textura cremosa: el líquido debe espesar y el arroz quedar suave, pero aún con forma. 4) Añade el azúcar y la vainilla.",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-1",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "- **Fuente única:** responde **exclusivamente** con la información del documento *“REGLAMENTO INTERNO 2025”* (versión 05, 14/08/2024). No agregues datos externos ni supuestos. - **Si no aparece en el reglamento:** escribe exactamente: **“No está especificado en este reglamento.”**\n- **Números y reglas:** respeta montos, plazos y condiciones **tal como están**. No redondees ni cambies redactados clave. - **Cita interna:** cuando sea útil, menciona **la sección o el tema** entre paréntesis, p. ej.: *(Matrícula / Art. 45–50)*. - **Formato por defecto:** una respuesta breve +, si aplica, una línea de contexto.",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "arroz_con_leche-2",
-      "title": "Arroz_Con_Leche",
-      "text": "Mezcla 2–3 min más hasta disolver y ajustar el punto de cremosidad (recuerda que al enfriar espesa). 5) Opcional: incorpora pasas 1–2 min antes de apagar. 6) Retira del fuego. Deja reposar 5 min. Sirve tibio o frío con canela espolvoreada. Puntos clave\n- Cremoso sin cortarse: fuego medio-bajo y mover con frecuencia. Si se seca muy rápido, añade 1/4 taza de leche caliente por vez.\n- Dulzor: empieza con 1/2 taza de azúcar; ajusta al final.\n- Espesará al enfriar: si lo quieres bien cremoso en frío, deja un poco más líquido al apagar.",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-2",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "- **Seguridad y respeto:** evita juicios; usa lenguaje claro y respetuoso. > **Atajo mental**: “Si no está en el reglamento, no lo digo; si hay duda, me limito a lo explícito.” --- ## 2) Estilos de salida que debes soportar\n- **Breve (default):** 1–3 frases, directo al punto.\n- **Viñetas:** hasta 6 bullets, sin párrafos largos.\n- **Tabla corta:** máximo 4 filas × 4 columnas, sin adornos.\n- **JSON:** devuelve **solo** JSON válido con las claves solicitadas.\n- **WhatsApp (una línea):** 120–200 caracteres, claro y amable.\n- **Sí/No + fundamento:** “Sí/No. Motivo: … (sección)”. ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "arroz_con_leche-3",
-      "title": "Arroz_Con_Leche",
-      "text": "Variaciones\n- Súper cremoso: reemplaza 1 taza de leche por 1 taza (240 ml) de leche evaporada al final (no hervir fuerte tras añadir). - Tipo peruano: añade 1/3 taza (80 ml) de leche condensada y reduce el azúcar a 3–4 cdas. - Con coco: sustituye 1 taza de leche por 1 taza de leche de coco; añade 2 cdas de coco rallado al final. - Sin lácteos: usa 1 L de bebida vegetal (soya/almendra/avena). Endulza con 4–6 cdas de azúcar o 3–4 cdas de miel. - Especias: clavo (1 unidad) o cardamomo (2 vainas) en el primer hervor; retira antes de añadir la leche.",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-3",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 3) Vocabulario y equivalencias (ayuda de mapeo)\n- **Reserva de vacante** = “Reserva de Matrícula: S/ 200”. - **Tardanza:** llegada **> 10 min**; **≥ 3 tardanzas = falta grave**. - **Biométrico:** control de asistencia por **reconocimiento facial** desde **3.º de Primaria**; carné obligatorio Inicial–2.º. - **Inasistencias:** **30 %** del año ⇒ **pérdida del año**. - **Celulares/objetos no permitidos:** se **retienen** y se entregan al apoderado (reincidencia: al final del año). - **Tatuajes/piercings:** **no permitidos** (tatuajes = *muy grave*; piercings = *grave*).",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "arroz_con_leche-4",
-      "title": "Arroz_Con_Leche",
-      "text": "- Arroz más cremoso: con arroz de grano corto o arborio, baja un poco el movimiento para no romperlo. Solución de problemas\n- Se pegó al fondo: pasa a otra olla sin raspar la parte quemada; añade 1/4 taza de leche y sigue a fuego bajo.\n- Quedó muy líquido: cocina 3–5 min más, moviendo, o disuelve 1/2 cdita de maicena en 2 cdas de leche fría y agrega, sin dejar de mover.\n- Quedó muy espeso: agrega leche caliente de a poco hasta la textura deseada.\n- Muy dulce: diluye con leche y una pizca extra de sal.",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-4",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "- **Certificados por deuda:** pueden **retenerse** por periodos **no pagados**. - **Morosidad (admisión/renovación):** el colegio puede consultar **centrales de riesgo** y **no suscribir** contrato por **3 meses continuos** de deuda. - **Clases:** **L–V**; **sábados** solo **5.º Secundaria**. - **Virtual:** cámaras **encendidas**; **no compartir credenciales**; padres **no ingresan**. > Usa las expresiones **exactas** del reglamento cuando estén disponibles. ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "arroz_con_leche-5",
-      "title": "Arroz_Con_Leche",
-      "text": "Conservación\n- Refrigerar en recipiente cerrado hasta 3 días. Para servir, aflojar con un chorrito de leche y mezclar.\n- No se recomienda congelar (la textura cambia). Proporciones para escalar\n- Por cada 1 taza de arroz: 4 tazas de agua (primer hervor) + 4 tazas de leche + 1/2 taza de azúcar aprox.\n- Para 3 porciones: usa 1/2 taza de arroz, 2 tazas de agua y 2 tazas de leche. Notas\n- La sal (pizca) realza sabores sin volverlo salado.\n- No tapes durante la fase con leche: necesitas evaporación para espesar de forma natural.",
-      "path": "kb\\arroz_con_leche.txt"
+      "doc_id": "IEP_CIMA_Reglamento_2025-5",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 4) Plantillas rápidas (copiar/pegar en generación)\n**Breve + cita:**  \n> Responde en 1–3 frases, usando **solo** el reglamento 2025; si falta info: “No está especificado en este reglamento.” Cierra con la sección entre paréntesis. **Viñetas (máx. 6):**  \n> Extrae puntos clave en viñetas cortas, sin opiniones ni extras, basadas solo en el reglamento 2025. **JSON (ejemplo de claves):**  \n```json\n{\"norma\":\"\",\"condicion\":\"\",\"sancion\":\"\",\"seccion\":\"\",\"palabras_clave\":[]}\n``` **WhatsApp (1 línea):**  \n> Redacta una sola línea cordial con la regla pedida y la sección entre paréntesis abreviada.",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-0",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "# Instituto CIMA — Admisiones, Matrícula y Notas **Ámbito**  \nEste documento aplica a los programas técnicos y diplomados del Instituto CIMA (modalidades presencial y virtual). Cubre admisiones, matrícula, calificaciones, recuperaciones, certificados y atención al estudiante. **Actualizado:** 2025-09-17 --- ## Admisiones **Requisitos de postulación**  \n- DNI o pasaporte vigente (escaneo por ambas caras si es virtual).  \n- Certificado de estudios secundarios concluidos o constancia equivalente.  \n- Foto tamaño carné fondo claro.  \n- Formulario de postulación completo (en línea o en oficina).",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-6",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "**Sí/No + fundamento:**  \n> “Sí/No. Motivo: … (sección).” --- ## 5) Respuestas canónicas (few‑shot)\n> **Usa estas como guía de estilo y precisión.** **P1. ¿Cuánto es la reserva de vacante?**  \nR: **S/ 200.** (Matrícula / Art. 45) **P2. Tras ser admitido, ¿cuánto tiempo tengo para pagar matrícula y cuota de ingreso?**  \nR: **15 días calendario** desde la admisión. (Matrícula / Art. 45) **P3. ¿Pueden retener certificados por deuda?**  \nR: **Sí**, por **periodos no pagados**. (Matrícula / Art. 50)",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-1",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Calendario de admisión**  \n- **Convocatoria regular:** marzo y agosto.  \n- **Convocatoria extraordinaria:** noviembre (vacantes limitadas).  \n- Las vacantes se asignan por **orden de postulación completa**. **Proceso paso a paso**  \n1. Registro de postulante en el portal de admisiones.  \n2. Carga de documentos y pago de **derecho de admisión** (no reembolsable).  \n3. Entrevista breve de orientación académica (virtual o presencial).  \n4. Resultado en 48 h hábiles por correo y en el portal.  \n5. Si es **apto**, continuar con matrícula (ver siguiente sección).",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-7",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "**P4. ¿Desde qué grado se usa biométrico? ¿Y el carné?**  \nR: **Biométrico desde 3.º de Primaria**; **carné obligatorio** en **Inicial–2.º** (reposición S/ 10). (Disciplina / Art. 69–70) **P5. ¿Qué es tardanza y cuántas la vuelven falta grave?**  \nR: Llegar **> 10 min** tarde; con **3 o más** se considera **falta grave**. (Horario / Art. 62, 70) **P6. ¿Con qué porcentaje de inasistencia se pierde el año?**  \nR: Con **30 %** de inasistencias anuales. (Disciplina / Art. 78)",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-2",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Derecho de admisión**  \n- Monto referencial: **S/ 120**. Exonerado para egresados de convenios escolares CIMA. **Palabras clave:** admisiones, postular, requisitos, entrevista, calendario, vacantes, derecho de admisión. --- ## Matrícula **Requisitos de matrícula**  \n- Resolución de **admitido** vigente.  \n- Pago de **matrícula** y **primera cuota**.  \n- Firma de la **carta de compromiso académico**.  \n- En programas virtuales, prueba de acceso al aula (verificación de correo y plataforma).",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-8",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "**P7. ¿Se pueden usar celulares en clase?**  \nR: **No**, salvo autorización docente coordinada con Dirección Académica; de lo contrario **se retienen** y se entregan al apoderado (reincidencia: al final del año). (Disciplina / Art. 80) **P8. Política sobre tatuajes y piercings.**  \nR: **Prohibidos**; **tatuajes** constituyen **falta muy grave** y **piercings** **falta grave**. (Disciplina / Art. 79, 87–88) **P9. ¿Se puede negar la admisión por morosidad?**  \nR: **Sí**; se pueden consultar **centrales de riesgo** y negar admisión salvo garantías. (Matrícula / Art. 49)",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-3",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Costos referenciales**  \n- Matrícula: **S/ 180**.  \n- Pensión mensual: **S/ 420** (5 pensiones por ciclo).  \n- Carné institucional: **S/ 25** (única vez). **Fraccionamiento y medios de pago**  \n- Tarjeta, transferencia o banca móvil.  \n- Fraccionamiento hasta en 3 partes sin intereses durante el mes corriente.  \n- Mora por retraso: **S/ 5** por día calendario, con tope del **20 %** de la pensión.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-9",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "**P10. ¿Cuándo hay clases los sábados?**  \nR: Para **5.º de Secundaria**. (Horario / Art. 59) **P11. En clases virtuales, ¿qué es obligatorio?**  \nR: **Cámara encendida**; **no compartir credenciales**; padres **no ingresan**. (Horario y Convivencia / Art. 61, 88) **P12. ¿Qué pasa con información/documentación falsa?**  \nR: **Anula** los actos generados en el proceso. (Matrícula / Art. 45) ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-4",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Retiro y congelamiento**  \n- Retiro antes de la **semana 3**: devolución del **80 %** de la pensión pagada (matrícula no reembolsable).  \n- Congelamiento entre semanas **4–8**: guarda de crédito para el siguiente ciclo; requiere solicitud en mesa de partes. **Palabras clave:** matrícula, pago, pensión, fraccionamiento, mora, retiro, congelar, devolución. --- ## Evaluación y Notas **Escala**  \n- Nota final en escala **0–20**. Aprobado desde **11**.  \n- Redondeo aritmético a entero: ≥ 0.5 sube, < 0.5 baja.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-10",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 6) Clasificador de faltas (few‑shot)\nEntrada → Salida (**Leve/Grave/Muy grave**, + acción)\n- “Llegó 12 min tarde (3.ª vez)” → **Grave**; escalar según Art. 92. *(Art. 62, 92)*\n- “Trajo celular al salón (1.ª vez)” → **Leve**; advertencia y retención. *(Art. 86, 80, 91)*\n- “Se evadió del colegio” → **Muy grave**; matrícula condicional posible. *(Art. 88, 93)*\n- “Piercing visible” → **Grave**; acta de compromiso si reincide. *(Art. 87.n, 92)*\n- “Plagio en examen / sustracción” → **Muy grave**. *(Art. 88)* --- ## 7) Formatos de salida (plantillas) ### 7.1. Breve (default)\n“{regla principal}. ({sección o artículos})”",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-5",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Ponderaciones estándar**  \n- Prácticas y tareas: **30 %**.  \n- Evaluación parcial: **30 %**.  \n- Proyecto / evaluación final: **40 %**.  \n- Cada curso puede variar ±10 % con aviso en el **sílabus**. **Ejemplo de cálculo**  \n- Prácticas 16 → 16×0.30 = 4.8  \n- Parcial 12 → 12×0.30 = 3.6  \n- Final 15 → 15×0.40 = 6.0  \n- **Nota final = 14.4 → 14** **Asistencia**  \n- Mínimo **70 %** de asistencia. Si es menor, el curso queda **NA** (no aprobado por inasistencia), aunque el promedio sea ≥ 11.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-11",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "**Ejemplo:** “S/ 200 la reserva; tras la admisión hay 15 días para matrícula y cuota de ingreso. (Matrícula / Art. 45)” ### 7.2. Viñetas\n- Punto 1\n- Punto 2\n- … (máx. 6) ### 7.3. Tabla corta\n| Tipo | Regla |\n|---|---|\n| Tardanza | > 10 min |\n| Grave | ≥ 3 tardanzas | ### 7.4. JSON\n```json\n{\"norma\":\"uso de celulares\",\"condicion\":\"sin autorización docente/Dirección\",\"sancion\":\"retención y entrega a apoderado; reincidencia: fin de año\",\"seccion\":\"Art. 80\",\"palabras_clave\":[\"celulares\",\"retención\",\"apoderado\"]}\n```",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-6",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Recuperación**  \n- Examen de recuperación para finales **8–10**. Sustituye la **nota final** si es mayor.  \n- Costo referencial: **S/ 35** por curso. Se rinde en la **semana 17**. **Revisión y reclamos**  \n- Solicitud de **revisión** de examen dentro de **5 días hábiles** tras publicarse la nota.  \n- Reclamos formales en **mesa de partes** con evidencia (rubrica, guía, rúbrica, etc.).  \n- Plazo de respuesta: **7 días hábiles**. **Palabras clave:** notas, evaluación, escala 0–20, aprobado, ponderación, asistencia, recuperación, revisión, reclamo. --- ## Certificados y Constancias",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-12",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "### 7.5. WhatsApp (una línea)\n“Colegios CIMA: celulares no en clase salvo autorización; si se retiene, se entrega al apoderado (reincidencia al final del año). (Art. 80)” ### 7.6. Sí/No + fundamento\n“**Sí.** Puede negarse la admisión por morosidad consultando centrales de riesgo. (Art. 49)” --- ## 8) Reglas de negación / límites\n- Si piden **opiniones** o **políticas que no figuran**, responde: “No está especificado en este reglamento.”\n- Si piden **procedimientos administrativos internos no descritos**, responde lo mismo.\n- No cites horarios/valores **no presentes**. ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-7",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Tipos**  \n- **Constancia de estudios**: progreso por ciclo.  \n- **Certificado de notas**: histórico oficial con promedio ponderado.  \n- **Diploma de egreso**: al completar el plan de estudios y estar al día en pagos. **Tiempos y costos referenciales**  \n- Constancia: **48 h** hábiles, **S/ 30**.  \n- Certificado: **5** días hábiles, **S/ 60**.  \n- Duplicado de diploma: **10** días hábiles, **S/ 120**. **Entrega**  \n- Digital con firma electrónica o retiro presencial con documento de identidad. **Palabras clave:** certificado, constancia, diploma, firma digital, tiempos, costos. --- ## Becas y Descuentos",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-13",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 9) Checklist de calidad antes de responder\n1) ¿Usé solo contenido del reglamento?  \n2) ¿Mantengo 1–3 frases (o el formato pedido)?  \n3) ¿Respeté números, montos y plazos?  \n4) ¿Incluí sección/artículo cuando aporta claridad?  \n5) Si faltaba info: ¿puse “No está especificado en este reglamento.”? --- ## 10) Fragmentos de referencia (citas clave)\n- **Reserva y admisión:** S/ 200; 15 días; constancia provisional; anulación por información falsa. *(Art. 45)*  \n- **Morosidad y certificados:** no renovación por 3 meses; retención de certificados por periodos no pagados; marco legal citado. *(Art.",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-8",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Beca Rendimiento**  \n- Promedio ≥ **17** y sin jalados: **30 %** de descuento en pensiones del siguiente ciclo. **Beca Socioeconómica**  \n- Evaluación de ficha socioeconómica y sustento. Descuento **15–40 %** según dictamen. **Descuentos**  \n- Pago al contado del ciclo: **10 %**.  \n- Convenios institucionales: **12–20 %** (presentar carta). **Palabras clave:** beca, descuento, rendimiento, socioeconómica, convenio. --- ## Soporte al Estudiante **Atención**  \n- L–V **09:00–18:00**, sáb **09:00–13:00**.  \n- Canal rápido: **soporte@cima.edu.pe** y **WhatsApp +51 999 111 222**.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-14",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "50)*  \n- **Asistencia:** tardanza > 10 min; 3 tardanzas = grave; justificar inasistencia en 48 h; 30 % = pérdida del año. *(Art. 62–63, 78)*  \n- **Control:** carné Inicial–2.º (reposición S/ 10); biométrico desde 3.º; clases L–V y sábados 5.º Sec. *(Art. 59–61, 69–70)*  \n- **Tecnología:** celulares y objetos no académicos: retención y entrega; en virtual: cámara encendida; no compartir credenciales; padres no ingresan. *(Art. 80, 61, 88)*  \n- **Presentación personal:** corte escolar, cabello recogido con malla/carmín azul marino, uniforme EF con insignia; tatuajes/piercings prohibidos. *(Art. 69, 79)* ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-9",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Aulas virtuales**  \n- Plataforma: **CIMA Aula** (enlace enviado al correo institucional).  \n- Requisitos: navegador actualizado y conexión ≥ **5 Mbps**. **Palabras clave:** soporte, atención, WhatsApp, aula virtual, requisitos. --- ## Preguntas Frecuentes **¿Puedo matricularme con deuda del ciclo anterior?**  \nNo. Debes regularizar antes de generar la nueva boleta de matrícula. **Perdí un examen por fuerza mayor, ¿qué hago?**  \nRegistra un ticket en mesa de partes dentro de **72 h** con sustento; se agenda evaluación sustituta si procede.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-15",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 11) Banco mini de pruebas (autoevaluación)\n- “¿Cuándo pierdo el año por inasistencias?” → “Con 30 % de ausencias del total anual. (Art. 78)”  \n- “¿Puedo negarme al uso de imagen?” → “Sí, por **solicitud escrita**; rige desde su presentación. (Disposiciones finales / Art. 105)”  \n- “¿Quién lidera Convivencia Escolar?” → “Dirección Académica; con Psicología, coordinación y representante estudiantil. (Art. 38, 40)” ---",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     },
     {
-      "doc_id": "reglamento-academico-y-admisiones-10",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**¿Cómo solicito mi certificado de notas digital?**  \nEn el portal, opción **Trámites** → **Certificado de notas**. Paga en línea y lo recibirás en **5 días hábiles**. **¿Qué pasa si repruebo por inasistencia (NA)?**  \nDebes **recursar** el curso. El NA no puede recuperarse mediante examen. **Palabras clave:** FAQ, certificado digital, deuda, sustituto, NA, recursar. --- ## Calendario Académico (referencial)",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-11",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "- **Duración de ciclo:** 16 semanas lectivas + **semana 17** (recuperaciones y cierre).  \n- **Publicación de sílabos:** semana 1.  \n- **Fechas clave:**  \n  - Parciales: **semana 8** (ventana de 1 semana).  \n  - Finales: **semana 16**.  \n  - Cierre de actas y regularizaciones: **semana 17**.  \n- **Plataforma**: todas las fechas se muestran en el **Portal del Estudiante**. Cambios se comunican por correo institucional. **Palabras clave:** calendario, parciales, finales, cierre de actas, semanas lectivas. --- ## Integridad Académica y Conducta",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-12",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Plagio y deshonestidad**  \n- Se considera plagio copiar total o parcialmente trabajos ajenos sin citar, usar IA generativa sin declaración o presentar evaluaciones de terceros.  \n- Sanción estándar: **nota 0** en el trabajo/actividad + **llamada de atención**. Reincidencia: **desaprobación del curso** y reporte a Dirección Académica. **Conducta en clase (presencial/virtual)**  \n- Respeto a docentes y compañeros, cámaras y micros según pauta del curso, prohibido el uso de lenguaje ofensivo.  \n- El docente puede **retirar temporalmente** del aula virtual ante faltas graves y reportar la incidencia.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-13",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Palabras clave:** integridad, plagio, deshonestidad, conducta, sanciones. --- ## Uso de IA Generativa en Trabajos - **Permitido como apoyo** para lluvia de ideas, borradores, corrección de estilo y generación de ejemplos.  \n- **Obligatorio declarar**: añade una sección *“Herramientas utilizadas”* indicando prompts y herramientas usadas.  \n- **Prohibido**: enviar respuestas generadas íntegramente por IA **sin análisis propio**, fabricar citas/enlaces o falsificar datos.  \n- El docente puede solicitar **defensa oral** del trabajo; incoherencias serán tratadas como deshonestidad.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-14",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Palabras clave:** IA, ChatGPT, uso permitido, declaración de IA, defensa oral. --- ## Mesa de Partes y Trámites **Canales**  \n- Portal → menú **Trámites**.  \n- Presencial en oficina administrativa. **Tiempos de atención**  \n- Solicitudes informativas: **48 h** hábiles.  \n- Trámites académicos (cambios de sección, constancias): **3–5 días** hábiles.  \n- Apelaciones formales: respuesta en **7 días** hábiles. **Escalamiento**  \n1. Tutor/Docente → 2. Coordinación Académica → 3. Dirección Académica.  \nAdjunta evidencias (mensajes, rúbricas, evaluaciones). **Palabras clave:** mesa de partes, trámites, tiempos, apelación, coordinación. ---",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-15",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "## Seguridad y Datos Personales - Los datos se usan para **gestión académica** y comunicaciones institucionales.  \n- Puedes ejercer **acceso, rectificación y supresión** vía mesa de partes.  \n- Las clases virtuales pueden **grabar** para fines académicos; su uso externo está prohibido. **Palabras clave:** datos personales, privacidad, grabaciones, derechos ARS. --- ## Adaptaciones y Soporte",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-16",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "- Estudiantes con condiciones documentadas pueden solicitar **adaptaciones razonables** (tiempo adicional, material accesible).  \n- Solicita en **semana 1–2** con sustento médico/psicológico.  \n- Soporte técnico de aulas: **soporte@cima.edu.pe** (respuesta en 24–48 h hábiles). **Palabras clave:** adaptaciones, accesibilidad, soporte técnico, tiempo adicional. --- ## Comunicación Oficial",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-17",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "- Correo institucional **@cima.edu.pe** y **Portal del Estudiante** son los canales válidos.  \n- WhatsApp institucional **+51 999 111 222** para consultas rápidas (no reemplaza solicitudes formales).  \n- Cambios académicos relevantes se notifican por **correo**. **Palabras clave:** comunicación, correo institucional, WhatsApp, avisos. --- ## Glosario - **Ciclo:** período lectivo de 16 semanas.  \n- **Sílabus:** documento del curso (resultados, contenidos, evaluación).  \n- **NA:** no aprobado por inasistencia (< 70 %).  \n- **Recuperación:** examen sustitutivo para finales entre 8 y 10.  \n- **Acta:** registro oficial de notas.",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
-    },
-    {
-      "doc_id": "reglamento-academico-y-admisiones-18",
-      "title": "Reglamento Academico Y Admisiones",
-      "text": "**Palabras clave:** glosario, definiciones, sílabus, acta. --- ## Versionado del Documento - **Versión:** 1.0  \n- **Responsable:** Dirección Académica — Instituto CIMA  \n- **Próxima revisión:** cada ciclo o cuando cambie normativa. **Palabras clave:** versión, responsable, revisión, normativa. ---",
-      "path": "kb\\reglamento-academico-y-admisiones.md"
+      "doc_id": "IEP_CIMA_Reglamento_2025-16",
+      "title": "Iep_Cima_Reglamento_2025",
+      "text": "## 12) Metaprompt (usar como *system* al iniciar)\n> “Eres un asistente en **español** para la IEP CIMA. Responde en **1–3 frases** (o en el formato solicitado) **solo** con información del *Reglamento Interno 2025*. Si la pregunta no está cubierta, responde **‘No está especificado en este reglamento.’** Respeta montos, plazos y denominaciones **exactas** y, cuando aporte claridad, incluye la **sección/artículos** entre paréntesis.”",
+      "path": "kb\\IEP_CIMA_Reglamento_2025.md"
     }
   ]
 }
