@@ -2,40 +2,236 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chatbot CIMA</title>
+
+  <!-- Fuente limpia y legible -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: system-ui, Arial, sans-serif; max-width: 800px; margin: 24px auto; }
-    #log p { margin: .4rem 0; }
-    .me { color: #0a5; }
-    .bot { color: #06f; }
-    textarea { width: 100%; }
+    :root{
+      /* Colores CIMA */
+      --cima-navy:#0A3D7A;
+      --cima-blue:#0B5FA5;
+      --cima-blue-2:#0E6CC0;
+      --cima-amber:#F4A640;
+      --bg:#F3F7FB;
+      --surface:#ffffff;
+      --text:#0F1A2A;
+      --muted:#5B6B80;
+      --ring: rgba(11,95,165,.45);
+      --border:#E6EEF7;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(180deg, var(--cima-navy), var(--cima-blue) 45%, var(--cima-blue-2)) fixed;
+    }
+
+    /* Header */
+    .header{
+      background: linear-gradient(90deg, var(--cima-blue), var(--cima-blue-2));
+      color:#fff;
+      padding:18px 0;
+      box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    }
+    .header .wrap{
+      max-width:1100px; margin:0 auto; padding:0 20px;
+      display:flex; align-items:center; gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:14px;
+    }
+    .brand img{
+      width:40px; height:40px; object-fit:cover; border-radius:10px;
+      background:#fff; padding:4px; box-shadow:0 4px 10px rgba(0,0,0,.15);
+    }
+    .brand h1{
+      font-size:20px; font-weight:700; margin:0; letter-spacing:.2px;
+    }
+    .brand p{
+      margin:0; font-size:12px; opacity:.9;
+    }
+
+    /* Layout */
+    .container{ max-width:1100px; margin:22px auto; padding:0 20px; }
+    .grid{
+      display:grid; gap:22px;
+      grid-template-columns: 1.25fr .85fr;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card{
+      background:var(--surface);
+      border-radius:18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.16);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.35);
+    }
+    .card .card-bar{
+      height:6px;
+      background: linear-gradient(90deg, var(--cima-amber), #ffd58a 70%, transparent);
+    }
+    .card .card-head{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 20px 6px 20px;
+    }
+    .card .card-head h2{
+      margin:0; font-size:18px; font-weight:700; color:var(--cima-blue);
+    }
+    .card .card-body{ padding:16px 20px 20px 20px; }
+
+    /* Chat log */
+    #log{
+      background:var(--bg);
+      min-height:360px; max-height:520px; overflow:auto;
+      padding:14px; border-radius:14px; border:1px solid var(--border);
+      box-shadow: inset 0 1px 0 #fff;
+    }
+    #log p{
+      margin:.55rem 0;
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      box-shadow: 0 4px 12px rgba(10,61,122,.08);
+      border-left:4px solid var(--cima-blue);
+      line-height:1.35;
+      word-wrap:break-word;
+    }
+    b.me{ color:#0a5; }
+    b.bot{ color:#06f; }
+
+    /* Inputs */
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .field{
+      width:100%;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    input[type="text"], input[type="search"], input[type="url"], input[type="number"], input[type="password"], textarea{
+      width:100%; padding:12px 14px; border-radius:12px;
+      border:1px solid var(--border); background:#fff;
+      outline:none; font-size:14px;
+      transition: box-shadow .2s, border-color .2s, transform .05s;
+    }
+    #sid{ max-width:330px; }
+    #msg{ flex:1 1 420px; }
+
+    textarea{ min-height:140px; resize:vertical; }
+
+    input:focus, textarea:focus{
+      border-color: var(--cima-blue);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    /* Buttons */
+    .btn{
+      appearance:none; border:none; border-radius:12px; cursor:pointer;
+      padding:11px 14px; font-weight:700; font-size:14px;
+      transition: transform .06s ease, box-shadow .2s ease, opacity .15s;
+      box-shadow: 0 8px 18px rgba(11,95,165,.22);
+      white-space:nowrap;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(180deg, var(--cima-blue-2), var(--cima-blue));
+      color:#fff;
+    }
+    .btn-secondary{
+      background:#eef5ff; color:var(--cima-blue);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    .btn-amber{
+      background: linear-gradient(180deg, #ffd58a, var(--cima-amber));
+      color:#5b3a00;
+      box-shadow: 0 8px 18px rgba(244,166,64,.25);
+    }
+
+    /* Small helpers */
+    .hint{ color:var(--muted); font-size:12px; margin-top:6px; }
+    pre#kb_out{
+      margin-top:12px; background: #0f172a; color:#e5e7eb;
+      padding:12px; border-radius:12px; overflow:auto; max-height:260px;
+      border:1px solid #1f2937;
+    }
+    footer{
+      text-align:center; color:#dbeafe; font-size:12px; opacity:.9; margin:26px 0;
+    }
   </style>
 </head>
 <body>
-  <h2>Chatbot CIMA (RAG estricto)</h2>
 
-  <div id="log"></div>
+  <!-- Header -->
+  <header class="header">
+    <div class="wrap">
+      <div class="brand">
+        <!-- Reemplaza logo.png por la ruta a tu logo -->
+        <img src="logo.png" alt="Logo CIMA">
+        <div>
+          <h1>Chatbot CIMA</h1>
+          <p>Asistente con RAG estricto — interfaz renovada</p>
+        </div>
+      </div>
+    </div>
+  </header>
 
-  <div style="margin-top:8px;">
-    <input id="sid" placeholder="session_id (opcional)" style="width:280px;" />
-  </div>
-  <div style="margin-top:8px;">
-    <input id="msg" placeholder="Escribe tu mensaje..." style="width:520px;" />
-    <button onclick="send()">Enviar</button>
-    <button onclick="reset()">Reset</button>
-  </div>
+  <main class="container">
+    <div class="grid">
+      <!-- Chat -->
+      <section class="card">
+        <div class="card-bar"></div>
+        <div class="card-head">
+          <h2>💬 Conversación</h2>
+        </div>
+        <div class="card-body">
+          <div id="log" aria-live="polite" aria-label="Historial de chat"></div>
 
-  <hr/>
-  <h3>📚 Alimentar conocimiento</h3>
-  <input id="kb_title" placeholder="Título" style="width:320px;" />
-  <br/>
-  <textarea id="kb_text" rows="6" placeholder="Pega aquí tu contenido (.txt/.md)"></textarea>
-  <br/>
-  <button onclick="kbAdd()">Guardar en KB</button>
-  <button onclick="kbReindex()">Reindexar</button>
-  <button onclick="kbList()">Ver documentos</button>
-  <pre id="kb_out" style="white-space:pre-wrap;"></pre>
+          <div class="field" style="margin-top:14px;">
+            <input id="sid" type="text" placeholder="session_id (opcional)" />
+          </div>
 
+          <div class="row" style="margin-top:8px;">
+            <input id="msg" type="text" placeholder="Escribe tu mensaje..." />
+            <button class="btn btn-primary" onclick="send()">Enviar</button>
+            <button class="btn btn-secondary" onclick="reset()">Reset</button>
+          </div>
+          <div class="hint">Consejo: puedes reutilizar el mismo <em>session_id</em> para mantener el contexto.</div>
+        </div>
+      </section>
+
+      <!-- Knowledge Base -->
+      <section class="card">
+        <div class="card-bar"></div>
+        <div class="card-head">
+          <h2>📚 Alimentar conocimiento</h2>
+        </div>
+        <div class="card-body">
+          <input id="kb_title" type="text" placeholder="Título del documento" />
+          <textarea id="kb_text" rows="6" placeholder="Pega aquí tu contenido (.txt/.md)"></textarea>
+
+          <div class="row" style="margin-top:8px;">
+            <button class="btn btn-amber" onclick="kbAdd()">Guardar en KB</button>
+            <button class="btn btn-secondary" onclick="kbReindex()">Reindexar</button>
+            <button class="btn btn-secondary" onclick="kbList()">Ver documentos</button>
+          </div>
+
+          <pre id="kb_out"></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>© CIMA — Diseño UI con paleta institucional</footer>
+
+  <!-- ⚠️ Scripts originales intactos -->
   <script>
   async function send(){
     const sid = document.getElementById('sid').value.trim() || 'web';

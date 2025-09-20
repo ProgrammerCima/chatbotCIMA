@@ -1,0 +1,5 @@
+Si tu iGPU da error, cambia OPENVINO_DEVICE=CPU (seguirás en OpenVINO pero en CPU).
+
+Para volver al modo anterior (solo CPU PyTorch): BACKEND=pt y deja DEVICE=cpu.
+
+Si ya agregaste el soporte de KB_MODEL en app.py, podrás cambiar de embeddings desde este .env; si no, puedes mantener esa línea sin problema.
