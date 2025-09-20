@@ -6,15 +6,27 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # ======================
-# Configuración
+# Configuración (desde .env)
 # ======================
-HF_MODEL = os.getenv("HF_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
-DEVICE = os.getenv("DEVICE", "cpu")              # "cpu" por defecto
-MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "140"))
-TEMPERATURE = float(os.getenv("TEMPERATURE", "0.6"))
-TOP_P = float(os.getenv("TOP_P", "0.9"))
-REPETITION_PENALTY = float(os.getenv("REPETITION_PENALTY", "1.15"))
-NO_REPEAT_NGRAM = int(os.getenv("NO_REPEAT_NGRAM", "4"))
+HF_MODEL = os.getenv("HF_MODEL", "Qwen/Qwen2.5-3B-Instruct")
+
+# Backend: "ov" (OpenVINO) o "pt" (PyTorch)
+BACKEND = os.getenv("BACKEND", "ov").lower()
+
+# OpenVINO
+OPENVINO_DEVICE_ENV = os.getenv("OPENVINO_DEVICE", "AUTO:GPU,CPU").upper()  # "GPU"|"CPU"|"AUTO:GPU,CPU"|"MULTI:GPU,CPU"
+OV_PRECISION = os.getenv("OV_PRECISION", "fp16")
+OV_NUM_STREAMS = os.getenv("OV_NUM_STREAMS", "1")  # 1 = seguro para iGPU
+
+# PyTorch (solo si BACKEND=pt)
+DEVICE_ENV = os.getenv("DEVICE", "auto").lower()  # "auto"|"cpu"|"cuda"|("gpu"->"cuda")
+
+# Decodificación / estilo
+MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "80"))
+TEMPERATURE = float(os.getenv("TEMPERATURE", "0.55"))
+TOP_P = float(os.getenv("TOP_P", "0.85"))
+REPETITION_PENALTY = float(os.getenv("REPETITION_PENALTY", "1.12"))
+NO_REPEAT_NGRAM = int(os.getenv("NO_REPEAT_NGRAM", "5"))
 
 # Corrección gramatical opcional con LanguageTool (ES)
 ENABLE_GRAMMAR_ES = os.getenv("ENABLE_GRAMMAR_ES", "1") == "1"
@@ -23,6 +35,7 @@ try:
     _lt_es = language_tool_python.LanguageTool('es') if ENABLE_GRAMMAR_ES else None
 except Exception:
     _lt_es = None
+
 
 def _polish_es(text: str) -> str:
     if not _lt_es:
@@ -33,11 +46,98 @@ def _polish_es(text: str) -> str:
     except Exception:
         return text
 
-print(f"⏳ Cargando modelo {HF_MODEL} en {DEVICE}...")
+
+def _pick_pt_device() -> torch.device:
+    """Normaliza DEVICE_ENV y autodetecta si corresponde."""
+    dev = DEVICE_ENV
+    if dev in ("gpu", "nvidia"):
+        dev = "cuda"
+    if dev in ("auto", ""):
+        if torch.cuda.is_available():
+            dev = "cuda"
+        elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+            dev = "mps"
+        else:
+            dev = "cpu"
+    if dev not in ("cuda", "cpu", "mps", "xpu"):
+        dev = "cpu"
+    return torch.device(dev)
+
+
+# ======================
+# Carga de modelo/tokenizador
+# ======================
+print(f"⏳ Cargando modelo {HF_MODEL} con backend={BACKEND}...")
+
 tokenizer = AutoTokenizer.from_pretrained(HF_MODEL, use_fast=True)
-model = AutoModelForCausalLM.from_pretrained(HF_MODEL, torch_dtype=torch.float32)
-model.to(DEVICE)
-model.eval()
+
+if BACKEND == "ov":
+    # -------- OpenVINO (prioriza iGPU, con respaldo CPU) --------
+    try:
+        from optimum.intel.openvino import OVModelForCausalLM
+    except Exception as e:
+        raise RuntimeError(
+            "Falta instalar OpenVINO/Optimum Intel. Ejecuta:\n"
+            '  pip install "optimum[intel]" openvino openvino-dev'
+        ) from e
+
+    # Normaliza dispositivo: si ponen "GPU", convertimos a "AUTO:GPU,CPU"
+    if OPENVINO_DEVICE_ENV == "GPU":
+        ov_device = "AUTO:GPU,CPU"
+    elif OPENVINO_DEVICE_ENV == "CPU":
+        ov_device = "AUTO:CPU,GPU"
+    else:
+        ov_device = OPENVINO_DEVICE_ENV  # respeta AUTO:... o MULTI:...
+
+    ov_config = {
+        "CACHE_DIR": ".ov_cache",
+        "INFERENCE_PRECISION_HINT": OV_PRECISION,
+        "PERFORMANCE_HINT": "LATENCY",
+        "NUM_STREAMS": OV_NUM_STREAMS,  # reduce memoria en iGPU
+        # "DEVICE_PROPERTIES": {"GPU": {"NUM_STREAMS": OV_NUM_STREAMS}, "CPU": {"NUM_STREAMS": OV_NUM_STREAMS}},
+    }
+
+    try:
+        print(f"🔧 OpenVINO device='{ov_device}' (prioridad GPU con respaldo CPU)")
+        model = OVModelForCausalLM.from_pretrained(
+            HF_MODEL,
+            device=ov_device,
+            ov_config=ov_config,
+        )
+    except RuntimeError as e:
+        err = str(e)
+        # Fallback robusto si la iGPU no tiene memoria / falla compilación
+        if ("USM Device" in err or "ProgramBuilder build failed" in err
+                or "Can not allocate" in err or "allocate" in err):
+            print("⚠️ OpenVINO GPU sin memoria/compilación. Reintentando en CPU…")
+            model = OVModelForCausalLM.from_pretrained(
+                HF_MODEL,
+                device="CPU",
+                ov_config=ov_config,
+            )
+            os.environ["OPENVINO_DEVICE"] = "CPU"
+        else:
+            raise
+
+    # Tensores de entrada: en OV trabajamos desde CPU
+    _TENSOR_DEVICE = torch.device("cpu")
+
+else:
+    # -------- PyTorch --------
+    _pt_device = _pick_pt_device()
+    if _pt_device.type == "cuda":
+        dtype = torch.float16
+    elif _pt_device.type == "mps":
+        dtype = torch.float32
+    else:
+        dtype = torch.float32
+
+    model = AutoModelForCausalLM.from_pretrained(
+        HF_MODEL,
+        torch_dtype=dtype,
+    )
+    model.to(_pt_device)
+    _TENSOR_DEVICE = _pt_device
 
 # Asegurar tokens especiales
 if tokenizer.pad_token_id is None:
@@ -47,7 +147,9 @@ if getattr(model.config, "pad_token_id", None) is None:
 if getattr(model.config, "eos_token_id", None) is None:
     model.config.eos_token_id = tokenizer.eos_token_id
 
+model.eval()
 print("✅ Modelo cargado.")
+
 
 # ======================
 # Estilo / Política de respuesta (estricta y extractiva)
@@ -61,6 +163,7 @@ SYSTEM = (
     "\n3) Si mencionas correos, teléfonos, montos, fechas o porcentajes, DEBEN aparecer literalmente en esos bloques."
     "\n4) No inventes datos ni completes con dominios o números supuestos. No hagas suposiciones."
 )
+
 
 # ======================
 # Utilidades
@@ -83,6 +186,7 @@ def _clean(text: str) -> str:
             t = t.split(sp)[0]
 
     return t.strip().strip('"').strip()
+
 
 def _guard_from_context(text: str, context: str | None) -> bool:
     """
@@ -119,6 +223,7 @@ def _guard_from_context(text: str, context: str | None) -> bool:
 
     return True
 
+
 # ======================
 # Inferencia con historial + (opcional) contexto RAG
 # ======================
@@ -136,9 +241,7 @@ async def infer_with_history(
     # 0) Sistema con (o sin) contexto
     sys_msg = SYSTEM
     if context:
-        sys_msg += (
-            "\n\n" + context.strip() + "\n"
-        )
+        sys_msg += "\n\n" + context.strip() + "\n"
 
     # 1) Construir el prompt (chat_template si existe)
     msgs = [{"role": "system", "content": sys_msg}, *history, {"role": "user", "content": user_msg}]
@@ -149,7 +252,10 @@ async def infer_with_history(
             add_generation_prompt=True,
             tokenize=True,
             return_tensors="pt",
-        ).to(model.device)
+        )
+        # En PT movemos al device; en OV dejamos CPU
+        if BACKEND != "ov":
+            input_ids = input_ids.to(_TENSOR_DEVICE)
         attention_mask = torch.ones_like(input_ids)
     else:
         # Fallback simple
@@ -162,9 +268,13 @@ async def infer_with_history(
             else:
                 lines.append(f"Asistente: {m['content']}")
         lines.append("Asistente:")
-        enc = tokenizer("\n".join(lines), return_tensors="pt").to(model.device)
+        enc = tokenizer("\n".join(lines), return_tensors="pt")
         input_ids = enc["input_ids"]
         attention_mask = enc.get("attention_mask", None)
+        if BACKEND != "ov":
+            input_ids = input_ids.to(_TENSOR_DEVICE)
+            if attention_mask is not None:
+                attention_mask = attention_mask.to(_TENSOR_DEVICE)
 
     # 2) Generar
     with torch.no_grad():
@@ -179,6 +289,7 @@ async def infer_with_history(
             no_repeat_ngram_size=NO_REPEAT_NGRAM,
             pad_token_id=tokenizer.pad_token_id,
             eos_token_id=tokenizer.eos_token_id,
+            use_cache=True,
         )
 
     # 3) Decodificar solo tokens NUEVOS
@@ -196,6 +307,7 @@ async def infer_with_history(
         return "No dispongo de información suficiente en mi base de conocimiento para responderlo con precisión."
 
     return text
+
 
 # ======================
 # Modo single-turn

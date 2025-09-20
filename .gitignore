@@ -33,6 +33,11 @@ web/dist/
 npm-debug.log
 yarn-debug.log
 yarn-error.log
+# --- OpenVINO / Optimum caches ---
+.ov_cache/
+**/.ov_cache/
+*.cl_cache
+*.blob
 
 # Backup / swap
 *.bak
